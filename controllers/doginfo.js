@@ -1,8 +1,8 @@
-const { doginfos, validateData } = require('../models/doginfos');
+const { doginfos} = require('../models/doginfos');
 const dogrecords = require('../models/dogrecords');
 const sequelize = require('sequelize');
 const dogRecordService = require('../services/doginfo');
-
+const validateData = require('validateData');
 
 
 //강아지 기본 정보 받아오기

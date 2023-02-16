@@ -23,8 +23,8 @@ const userController = require('../controllers/user');
  /*
  // 5. 회원 정보 수정 API (JWT 검증 및 Validation - 메소드 체이닝 방식으로 jwtMiddleware 사용)
  router.patch('/:userEmail', jwtMiddleware, userController.patchUsers)
- module.exports = router;
 */
+
 
 // 자동로그인 API (JWT 검증 및 Payload 내뱉기)
 // JWT 검증 API
