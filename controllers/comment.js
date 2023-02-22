@@ -1,5 +1,5 @@
 const baseResponseStatus = require('../config/baseResponseStatus');
-const commentService = require("../services/comment")
+const commentService = require("../services/comment");
 const {response} = require("../config/response");
 
 exports.getTest = async function (req, res) {

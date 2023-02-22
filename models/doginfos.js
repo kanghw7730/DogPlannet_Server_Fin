@@ -1,32 +1,35 @@
-'use strict';
-module.exports = (sequelize, DataTypes) => {
- 
-  const DogInfos = sequelize.define('DogInfos', {
-    user_id:{
-      type: DataTypes.UUID,
-      allowNull: false,
-      unique: true,
-    },
-    dog_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    dog_type: {
-      type: DataTypes.ENUM,
-      values: ['비숑','닥스훈트','믹스견','말티즈','포메라니안','푸들','스피치'],
-      allowNull: false,
-    },
-    dog_sex: {
-      type: DataTypes.ENUM,
-      values:["남아","여아"],
-      allowNull: false,
-    }, 
-    // 받아올때 년도만 받아오세요.
-    dog_birthyear: {
-        type: DataTypes.DATEONLY,
-        allowNull: true,
-    }, 
-});
+const { pool } = require("../config/database");
 
-  return DogInfos;
-}
+//개정보 저장하기
+function saveDog(dogInfo) {
+    return new Promise((resolve, reject) => {
+      const sql = 'INSERT INTO dog_infos (dog_name, dog_sex, dog_type, dog_birthyear, user_id) VALUES (?, ?, ?, ?, ?)';
+      const values = [dogInfo.dogName, dogInfo.dog_sex, dogInfo.dogType, dogInfo.dog_birthyear, dogInfo.userId];
+  
+      pool.query(sql, values, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          const savedDogInfo = {
+            id: results.insertId,
+            dogName: dogInfo.dogName,
+            sex: dogInfo.sex,
+            dogType: dogInfo.dogType,
+            birthYear: dogInfo.birthYear,
+            userId: dogInfo.userId,
+          };
+          resolve(savedDogInfo);
+        }
+      });
+    });
+  }
+  
+  module.exports = {
+    saveDog,
+  };
+
+module.exports = dogDao;
+//개이름 대댓에 보내기
+
+
+//개정보(개이름/나이[n살]/성별/견)를 개기록에 보내기

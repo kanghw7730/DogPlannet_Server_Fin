@@ -1,59 +1,35 @@
-const { doginfos} = require('../models/doginfos');
-const dogrecords = require('../models/dogrecords');
-const sequelize = require('sequelize');
-const dogRecordService = require('../services/doginfo');
-const validateData = require('validateData');
+const mysql = require('mysql');
+const util = require('util');
 
+const query = util.promisify(pool.query).bind(pool);
+const express = require('express');
+const dogRouter = express.Router();
+
+
+const express = require('express');
+const DogInfo = require('./DogInfo');
+const dogService = require('./dogService');
+
+const router = express.Router();
 
 //강아지 기본 정보 받아오기
-exports.savedoginfo = async (req, res) => {
-    const { error } = validateData(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-  
-    let savedoginfo = new doginfos({
-      dog_name: req.body.dog_name,
-      dogtype: req.body.dogtype,
-      dog_sex: req.body.dog_sex,
-      dog_birthyear: req.body.dog_birthyear,
-    });
-    try {
-        savedoginfo = await savedoginfo.save();
-      res.send({ message: 'Data saved successfully', savedoginfo });
-    } catch (error) {
-      res.status(500).send({ error: error.message });
-    }
-  };
+router.post('/', (req, res, next) => {
+  const { dogName, sex, dogType, birthYear } = req.body;
+  const userId = req.headers['user-id'];
 
-//강아지 기록 정보 받아오기
-exports.savedogrecords = async (req, res) => {
-    const { error } = validateData(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-  
-    let savedogrecords = new dogrecords({
-      date: req.body.date,
-      weight: req.body.weight,
-      poop_type: req.body.poop_type,
-      walk_distance: req.body.distance,
-      walk_time: req.body.time,
-      mydog: req.body.image
+  const dogInfo = new DogInfo(dogName, sex, dogType, birthYear, userId);
+
+  dogService.saveDog(dogInfo)
+    .then((savedDogInfo) => {
+      res.status(201).json(savedDogInfo);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Unable to save dog info' });
     });
-  
-    try {
-        savedogrecords = await savedogrecords.save();
-      res.send({ message: 'Data saved successfully', savedogrecords });
-    } catch (error) {
-      res.status(500).send({ error: error.message });
-    }
-  };
+});
 
 //날짜와 id에 맞는 강아지의 기록 보내기
-  exports.getDogRecords = async (req, res) => {
-    const { date, user_id } = req.params;
-  
-    try {
-      const dogRecords = await dogRecordService.getDogRecords(date, user_id);
-      res.json(dogRecords);
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  };
+
+module.exports = router;
+

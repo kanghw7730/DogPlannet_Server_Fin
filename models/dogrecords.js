@@ -1,46 +1,7 @@
-'use strict';
+const baseResponseStatus = require('../config/baseResponseStatus');
+const doginfoService = require("../services/doginfo");
 
-module.exports = (sequelize, DataTypes) => {
-  
-  const DogRecords = sequelize.define('DogRecords', {
-    user_id:{
-      type: DataTypes.UUID,
-      allowNull:false,
-      unique: true,
-    },
 
-    date: {
-        type: DataTypes.DATEONLY,
-        allowNull: false,
-    },
+//개기록 받아오기(체중,변상태,시간,거리,개사진)
 
-    weight: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-    },
-
-    poop_type:{
-      type: DataTypes.ENUM,
-      values: ["정상","변비","설사"],
-      allowNull: false
-    }, 
-
-    walk_time: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-
-    walk_distance: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    
-    //이게 이미지입니다.
-    mydog: {
-      type: DataTypes.BLOB('long'),
-      allowNull: false,
-    },
-});
-
-  return DogRecords;
-};
+//개기록 보내기(체중,변상태,시간,거리,개사진)
